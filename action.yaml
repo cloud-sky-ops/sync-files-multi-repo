@@ -1,0 +1,47 @@
+name: "Sync Files to Multiple Repos via API"
+description: "Copies files from a directory to multiple repositories using GitHub API"
+author: "cloud-sky-ops"
+
+inputs:
+  github_token:
+    description: "GitHub Personal Access Token (PAT) with repo access"
+    required: true
+
+  create-pull-request:
+    description: "Set to true to create a PR instead of direct commit"
+    required: false
+    default: "false"
+
+  copy-from-directory:
+    description: "Directory to copy files from (default: shared)"
+    required: false
+    default: "shared"
+
+  copy-to-directory:
+    description: "Directory in target repos to copy files to (default: shared)"
+    required: false
+    default: "shared"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Install dependencies
+      shell: bash
+      run: pip install requests
+
+    - name: Run Python script
+      shell: bash
+      run: python sync_files.py
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        CREATE_PR: ${{ inputs.create-pull-request }}
+        COPY_FROM_DIRECTORY: ${{ inputs.copy-from-directory }}
+        COPY_TO_DIRECTORY: ${{ inputs.copy-to-directory }}
