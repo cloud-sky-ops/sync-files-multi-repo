@@ -45,6 +45,24 @@ jobs:
 
 ---
 
+## **Required File: `sync-repos.txt`**
+Creating the `sync-repos.txt` file is **mandatory**. This file contains a list of repositories where the files should be synced. Each repository should be listed on a new line in the format:
+
+```
+owner/repo-name-1
+owner/repo-name-2
+owner/repo-name-3
+```
+
+### **Example `sync-repos.txt`**
+```
+my-org/repo-one
+my-org/repo-two
+my-org/repo-three
+```
+
+---
+
 ## How It Works
 1. **Reads the list of repositories** from `sync-repos.txt`.
 2. **Detects the default branch** of each target repository.
@@ -63,12 +81,18 @@ copy-from-directory: "docs"
 copy-to-directory: "docs"
 ```
 
-### **2️⃣ Manage CI/CD Configurations for Hundreds of Services**
-- Sync GitHub Actions, Jenkinsfiles, and Kubernetes manifests across services.
-- Ensure all services follow **a standardized deployment process** by using dynamic CI/CD workflows.
+### **2️⃣ Manage CI/CD Configurations for Multiple Services from one place**
+- Ensure all services follow **a standardized deployment process** by creating dynamic CI/CD files which are re-useable across multiple repositories but managed in one central location.
 ```yaml
-copy-from-directory: "shared-workflows"
+copy-from-directory: ".github/workflows"
 copy-to-directory: ".github/workflows"
+```
+
+### **3️⃣ Update Dockerfiles Across Microservices**
+Keep all microservices updated with the latest **Docker base images**.
+```yaml
+copy-from-directory: "docker"
+copy-to-directory: "docker"
 ```
 ---
 
@@ -84,4 +108,3 @@ We welcome contributions! If you have ideas for new features, open an issue or s
 
 ## Support
 For issues or feature requests, open an [issue on GitHub](https://github.com/my-org/sync-file-action/issues).
-
