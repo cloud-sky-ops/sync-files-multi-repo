@@ -26,10 +26,15 @@ def get_files_in_directory(directory):
     """Returns a list of files (with paths) in the given directory."""
     file_paths = []
     for root, _, files in os.walk(directory):
+        # print(f"root: {root}")
+        # print(f"files: {files}")
         for file in files:
+            print(f"Adding file {file} to file path list")
             full_path = os.path.join(root, file)
             relative_path = os.path.relpath(full_path, directory)  # Keep subdirectories
+            print(f"Full Path: {full_path}, Relative Path: {relative_path}")
             file_paths.append((full_path, relative_path))
+    print("Final file paths to copy", file_paths)
     return file_paths
 
 # Read and encode all files
@@ -43,7 +48,9 @@ def get_file_sha(repo, path, branch="main"):
     url = f"https://api.github.com/repos/{repo}/contents/{path}?ref={branch}"
     response = requests.get(url, headers=HEADERS)
     if response.status_code == 200:
+        print(f"File already present at target path {path}. Updating contents...")
         return response.json().get("sha")
+    print(f"File not present at target path {path}. Adding a copy now...")
     return None
 
 # Create a new branch if needed
@@ -84,9 +91,10 @@ def update_files_in_repo(repo, branch="main"):
             target_path = relative_path  # Copy to root directory
         else:
             target_path = f"{COPY_TO_DIRECTORY}/{relative_path}" # Preserve source directory structure
+        print(f"Target path set for current file {relative_path} as {target_path}")
         url = f"https://api.github.com/repos/{repo}/contents/{target_path}"
-        sha = get_file_sha(repo, target_path, branch)
         encoded_content = encode_file(local_path)
+        sha = get_file_sha(repo, target_path, branch)
 
         payload = {
             "message": f"Syncing {relative_path} [Automated]",
@@ -120,6 +128,7 @@ def create_pull_request(repo, branch):
         print(f"❌ Failed to create PR in {repo}: {response.json()}")
 
 for repo in repos:
+    print(f"Initiating files sync to repo: {repo}")
     if CREATE_PR:
         branch = create_branch(repo)
         if branch:
