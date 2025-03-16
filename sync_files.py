@@ -6,8 +6,8 @@ from datetime import datetime, UTC
 # GitHub Token and PR flags
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 CREATE_PR = os.getenv("CREATE_PR", "false").lower() == "true"
-COPY_FROM_DIRECTORY = os.getenv("COPY_FROM_DIRECTORY", "shared")  # Default: "shared"
-COPY_TO_DIRECTORY = os.getenv("COPY_TO_DIRECTORY", "shared")  # Default: "shared"
+COPY_FROM_DIRECTORY = os.getenv("COPY_FROM_DIRECTORY", "").strip() or "."  # Default: root
+COPY_TO_DIRECTORY = os.getenv("COPY_TO_DIRECTORY", "").strip() or "."  # Default: root
 BOT_NAME = "syncbot"
 BOT_EMAIL = "syncbot@github.com"
 
@@ -80,7 +80,10 @@ def update_files_in_repo(repo, branch="main"):
     files = get_files_in_directory(COPY_FROM_DIRECTORY)
 
     for local_path, relative_path in files:
-        target_path = f"{COPY_TO_DIRECTORY}/{relative_path}"  # Preserve structure
+        if COPY_TO_DIRECTORY == ".":
+            target_path = relative_path  # Copy to root directory
+        else:
+            target_path = f"{COPY_TO_DIRECTORY}/{relative_path}" # Preserve source directory structure
         url = f"https://api.github.com/repos/{repo}/contents/{target_path}"
         sha = get_file_sha(repo, target_path, branch)
         encoded_content = encode_file(local_path)
