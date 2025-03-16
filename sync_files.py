@@ -18,9 +18,18 @@ HEADERS = {
     "Accept": "application/vnd.github.v3+json"
 }
 
-# Read repository list 
+# Read repository list
 with open("sync-repos.txt", "r") as f:
     repos = [line.strip() for line in f.readlines() if line.strip()]
+
+def get_default_branch(target_repo):
+    url = f"https://api.github.com/repos/{target_repo}"
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        return response.json().get("default_branch", None)
+    else:
+        print(f"❌ Failed to get default branch for {target_repo}: {response.json()}")
+        return None
 
 # Get all files in the source directory
 def get_files_in_directory(directory):
@@ -55,35 +64,35 @@ def get_file_sha(repo, path, branch="main"):
     return None
 
 # Create a new branch if needed
-def create_branch(repo):
-    url = f"https://api.github.com/repos/{repo}/git/ref/heads/main"
+def create_feature_branch(target_repo, default_branch):
+    url = f"https://api.github.com/repos/{target_repo}/git/ref/heads/{default_branch}"
     response = requests.get(url, headers=HEADERS)
-    
+
     if response.status_code == 200:
         base_sha = response.json()["object"]["sha"]
     else:
-        print(f"❌ Failed to get main branch SHA for {repo}")
+        print(f"❌ Failed to get {default_branch} branch SHA for {target_repo}")
         return None
 
     TIMESTAMP = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
     NEW_BRANCH = f"sync-branch-{TIMESTAMP}"
-    
-    url = f"https://api.github.com/repos/{repo}/git/refs"
+
+    url = f"https://api.github.com/repos/{target_repo}/git/refs"
     payload = {"ref": f"refs/heads/{NEW_BRANCH}", "sha": base_sha}
     response = requests.post(url, json=payload, headers=HEADERS)
 
     if response.status_code == 201:
-        print(f"✅ Created new branch '{NEW_BRANCH}' in {repo}")
+        print(f"✅ Created new branch '{NEW_BRANCH}' in {target_repo}")
         return NEW_BRANCH
     elif response.status_code == 422:
-        print(f"⚠️ Branch '{NEW_BRANCH}' already exists in {repo}")
+        print(f"⚠️ Branch '{NEW_BRANCH}' already exists in {target_repo}")
         return NEW_BRANCH
     else:
-        print(f"❌ Failed to create branch '{NEW_BRANCH}' in {repo}: {response.json()}")
+        print(f"❌ Failed to create branch '{NEW_BRANCH}' in {target_repo}: {response.json()}")
         return None
 
 # Upload files to the repo
-def update_files_in_repo(repo, branch="main"):
+def update_files_in_repo(target_repo, target_branch):
     """Creates or updates multiple files in the target repository."""
     files = get_files_in_directory(COPY_FROM_DIRECTORY)
 
@@ -93,14 +102,14 @@ def update_files_in_repo(repo, branch="main"):
         else:
             target_path = f"{COPY_TO_DIRECTORY}/{relative_path}" # Preserve source directory structure
         print(f"Target path set for current file {relative_path} as {target_path}")
-        url = f"https://api.github.com/repos/{repo}/contents/{target_path}"
+        url = f"https://api.github.com/repos/{target_repo}/contents/{target_path}"
         encoded_content = encode_file(local_path)
-        sha = get_file_sha(repo, target_path, branch)
+        sha = get_file_sha(target_repo, target_path, target_branch)
 
         payload = {
             "message": f"Syncing {relative_path} [Automated]",
             "content": encoded_content,
-            "branch": branch,
+            "branch": target_branch,
             "committer": {"name": BOT_NAME, "email": BOT_EMAIL}
         }
         if sha:
@@ -109,31 +118,38 @@ def update_files_in_repo(repo, branch="main"):
         response = requests.put(url, json=payload, headers=HEADERS)
 
         if response.status_code in [200, 201]:
-            print(f"✅ Successfully updated {target_path} in {repo} on branch {branch}")
+            print(f"✅ Successfully updated {target_path} in {target_repo} on branch {target_branch}")
         else:
-            print(f"❌ Failed to update {target_path} in {repo}: {response.json()}")
+            print(f"❌ Failed to update {target_path} in {target_repo}: {response.json()}")
 
-def create_pull_request(repo, branch):
-    url = f"https://api.github.com/repos/{repo}/pulls"
+def create_pull_request(target_repo, base_branch, head_branch):
+    url = f"https://api.github.com/repos/{target_repo}/pulls"
     payload = {
         "title": "Sync files [Automated]",
-        "head": branch,
-        "base": "main",
+        "head": head_branch,
+        "base": base_branch,
         "body": "This PR updates multiple files in the repository."
     }
     response = requests.post(url, json=payload, headers=HEADERS)
 
     if response.status_code == 201:
-        print(f"✅ Created PR in {repo}: {response.json()['html_url']}")
+        print(f"✅ Created PR in {target_repo}: {response.json()['html_url']}")
     else:
-        print(f"❌ Failed to create PR in {repo}: {response.json()}")
+        print(f"❌ Failed to create PR in {target_repo}: {response.json()}")
 
 for repo in repos:
     print(f"Initiating files sync to repo: {repo}")
-    if CREATE_PR:
-        branch = create_branch(repo)
-        if branch:
-            update_files_in_repo(repo, branch)
-            create_pull_request(repo, branch)
+    print(f"Fetching default branch for {repo}")
+    default_branch=get_default_branch(repo)
+    if default_branch:   
+        if CREATE_PR:
+            feature_branch = create_feature_branch(repo, default_branch)
+            if feature_branch:
+                update_files_in_repo(repo, feature_branch)
+                create_pull_request(repo, default_branch, feature_branch)
+            else:
+                raise Exception("Unable to create feature branch. Check logs")
+        else:
+            update_files_in_repo(repo, default_branch)
     else:
-        update_files_in_repo(repo)
+        raise Exception("Unable to fetch default branch. Check logs")
