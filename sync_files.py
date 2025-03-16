@@ -139,6 +139,7 @@ def create_pull_request(target_repo, base_branch, head_branch):
         print(f"✅ Created PR in {target_repo}: {response.json()['html_url']}")
     else:
         print(f"❌ Failed to create PR in {target_repo}: {response.json()}")
+    print("--------------------------------------------------------------------------------------------------------------------")
 
 for repo in repos:
     print(f"Initiating files sync to repo: {repo}")
