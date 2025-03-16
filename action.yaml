@@ -13,14 +13,14 @@ inputs:
     default: "false"
 
   copy-from-directory:
-    description: "Directory to copy files from (default: shared)"
+    description: "Directory to copy files from (default: root level of source repo)"
     required: false
-    default: "shared"
+    default: ""
 
   copy-to-directory:
-    description: "Directory in target repos to copy files to (default: shared)"
+    description: "Directory in target repos to copy files to (default: root level of target repo)"
     required: false
-    default: "shared"
+    default: ""
 
 runs:
   using: "composite"
