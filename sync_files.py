@@ -44,7 +44,9 @@ def get_files_in_directory(directory):
             relative_path = os.path.relpath(full_path, directory)  # Keep subdirectories
             print(f"Full Path: {full_path}, Relative Path: {relative_path}")
             file_paths.append((full_path, relative_path))
+            print("--------------------------------------------------------------------------------------------------------------------")
     print("Final file paths to copy", file_paths)
+    print("--------------------------------------------------------------------------------------------------------------------")
     return file_paths
 
 # Read and encode all files
@@ -121,6 +123,7 @@ def update_files_in_repo(target_repo, target_branch):
             print(f"✅ Successfully updated {target_path} in {target_repo} on branch {target_branch}")
         else:
             print(f"❌ Failed to update {target_path} in {target_repo}: {response.json()}")
+        print("--------------------------------------------------------------------------------------------------------------------")
 
 def create_pull_request(target_repo, base_branch, head_branch):
     url = f"https://api.github.com/repos/{target_repo}/pulls"
@@ -136,6 +139,7 @@ def create_pull_request(target_repo, base_branch, head_branch):
         print(f"✅ Created PR in {target_repo}: {response.json()['html_url']}")
     else:
         print(f"❌ Failed to create PR in {target_repo}: {response.json()}")
+    print("--------------------------------------------------------------------------------------------------------------------")
 
 for repo in repos:
     print(f"Initiating files sync to repo: {repo}")
