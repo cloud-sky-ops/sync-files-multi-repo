@@ -5,6 +5,13 @@ on:
     branches: ["main"]
     paths:
       - "*.py"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+      - 'release/**'
 
 jobs:
   build:
