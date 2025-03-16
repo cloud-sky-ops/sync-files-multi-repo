@@ -16,7 +16,7 @@ This GitHub Action enables seamless **file synchronization** across multiple rep
 ## Usage
 
 ### **Basic Workflow Example**
-This example syncs files from the `shared` directory to multiple repositories:
+This example syncs files from the `root` directory to multiple repositories:
 
 ```yaml
 name: Sync Files
@@ -40,8 +40,8 @@ jobs:
 |----------------------|--------------|---------|
 | `github_token` | **Required.** GitHub PAT token with repo access. | N/A |
 | `create-pull-request` | If `true`, creates a PR instead of committing directly. | `false` |
-| `copy-from-directory` | Source directory to sync from. | `shared` |
-| `copy-to-directory` | Target directory in the destination repos. | `shared` |
+| `copy-from-directory` | Source directory to sync from. | `root-directory` |
+| `copy-to-directory` | Target directory in the destination repos. | `root-directory` |
 
 ---
 
@@ -66,8 +66,8 @@ my-org/repo-three
 ## How It Works
 1. **Reads the list of repositories** from `sync-repos.txt`.
 2. **Detects the default branch** of each target repository.
-3. **Copies all files from the specified source directory**.
-4. **Uploads the files to the destination repositories**.
+3. **Copies all files from the specified source directory. If source directory isn't specified it picks all files from root directory of the source repo**.
+4. **Uploads the files to the destination repositories. If target directory isn't specified it copies all files to root directory of the target repo**.
 5. **Creates a pull request** (if enabled) or directly commits the files.
 
 ---
