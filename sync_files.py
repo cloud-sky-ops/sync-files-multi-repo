@@ -1,7 +1,8 @@
+from datetime import datetime, UTC
 import os
 import base64
 import requests
-from datetime import datetime, UTC
+
 
 # GitHub Token and PR flags
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
