@@ -35,11 +35,13 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pip install requests
+      run: |
+        pip install requests
+        echo "GITHUB_ACTION_PATH: ${{ github.action_path }}"
 
     - name: Run Python script
       shell: bash
-      run: python sync_files.py
+      run: python ${{ github.action_path }}/sync_files.py
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
         CREATE_PR: ${{ inputs.create-pull-request }}

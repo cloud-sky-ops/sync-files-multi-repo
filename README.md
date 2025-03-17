@@ -3,6 +3,8 @@
 ## Overview
 This GitHub Action enables seamless **file synchronization** across multiple repositories using the **GitHub API**. It allows copying an **entire directory** from the source repository to multiple target repositories **without cloning them**. The action supports both **direct commits** and **pull requests**, dynamically detecting the default branch of each repository.
 
+**Not supporting self-hosted runners yet**
+
 ## Key Features
 ✅ **Sync an entire directory** across multiple repositories.  
 ✅ **Automatically detects the default branch** instead of assuming `main`.  
