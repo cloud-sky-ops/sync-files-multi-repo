@@ -68,7 +68,7 @@ my-org/repo-three
 2. **Detects the default branch** of each target repository.
 3. **Copies all files from the specified source directory. If source directory isn't specified it picks all files from root directory of the source repo**.
 4. **Uploads the files to the destination repositories. If target directory isn't specified it copies all files to root directory of the target repo**.
-5. **Creates a pull request** (if enabled) otherwise directly commits the files to the default branch in that repo.
+5. **Creates a pull request** (if enabled) or directly commits the files to the default branch in that repo.
 
 ---
 
