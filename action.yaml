@@ -1,5 +1,5 @@
 name: "Sync Files to Multiple Repos via API"
-description: "Copies files from a directory to multiple repositories using GitHub API"
+description: "Copies files from a directory to one or multiple repositories using GitHub API"
 author: "cloud-sky-ops"
 
 inputs:
