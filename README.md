@@ -6,7 +6,7 @@ This GitHub Action enables seamless **file synchronization** across multiple rep
 ## Key Features
 ✅ **Sync an entire directory** across multiple repositories.  
 ✅ **Automatically detects the default branch** instead of assuming `main`.  
-✅ **Supports direct commits or creating pull requests** per repository.  
+✅ **Supports direct commits or creating pull requests** as per user input.  
 ✅ **Preserves directory structure** in the destination repositories.  
 ✅ **Works with both public and private repositories.**  
 ✅ **Lightweight & efficient**—uses GitHub API instead of full clones.  
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Use Sync Files Action
-        uses: my-org/sync-file-action@v1
+        uses: cloud-sky-ops/sync-files-multi-repo@v1
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
 ```
@@ -68,7 +68,7 @@ my-org/repo-three
 2. **Detects the default branch** of each target repository.
 3. **Copies all files from the specified source directory. If source directory isn't specified it picks all files from root directory of the source repo**.
 4. **Uploads the files to the destination repositories. If target directory isn't specified it copies all files to root directory of the target repo**.
-5. **Creates a pull request** (if enabled) or directly commits the files.
+5. **Creates a pull request** (if enabled) otherwise directly commits the files to the default branch in that repo.
 
 ---
 
@@ -87,6 +87,8 @@ copy-to-directory: "docs"
 copy-from-directory: ".github/workflows"
 copy-to-directory: ".github/workflows"
 ```
+  **Note**: To make changes to ".github/workflows", user needs to also add "**workflow**" permission to the PAT token.
+  ![image](https://github.com/user-attachments/assets/8f6c9a1f-1269-4c47-987a-54c23e675f7e)
 
 ### **3️⃣ Update Dockerfiles Across Microservices**
 Keep all microservices updated with the latest **Docker base images**.
