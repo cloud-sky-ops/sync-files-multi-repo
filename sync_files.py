@@ -1,7 +1,7 @@
 from datetime import datetime, UTC
 import os
 import base64
-import requests
+import requests, json
 
 
 # GitHub Token and PR flags
@@ -17,10 +17,6 @@ HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json"
 }
-
-# Read repository list
-with open("sync-repos.txt", "r") as f:
-    repos = [line.strip() for line in f.readlines() if line.strip()]
 
 def get_default_branch(target_repo):
     url = f"https://api.github.com/repos/{target_repo}"
@@ -141,7 +137,12 @@ def create_pull_request(target_repo, base_branch, head_branch):
         print(f"❌ Failed to create PR in {target_repo}: {response.json()}")
     print("--------------------------------------------------------------------------------------------------------------------")
 
-for repo in repos:
+# Read repository list
+with open("sync_configs.json", "r") as config_file:
+    parsed_json = json.load(config_file)
+    repos_config=parsed_json["repos"]
+
+for repo,configs in repos_config.items():
     print(f"Initiating files sync to repo: {repo}")
     print(f"Fetching default branch for {repo}")
     default_branch=get_default_branch(repo)
