@@ -1,4 +1,5 @@
 {
+    "_comment": "// boolean flags should also be passed as strings in the config file",
     "repos":{
         "repo_one": {
             "source_directory": "xyz/path/",
@@ -13,7 +14,7 @@
         "repo_three": {
             "source_directory": "xyz/path/",
             "target_directory": "abc/path/",
-            "create_pull_request": "false"
+            "create_pull_request": "true"
         }
     }
 }
