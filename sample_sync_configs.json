@@ -2,19 +2,19 @@
     "_comment": "// boolean flags should also be passed as strings in the config file",
     "repos":{
         "repo_one": {
-            "source_directory": "xyz/path/",
-            "target_directory": "abc/path/",
-            "create_pull_request": "false"
+            "copy-from-directory": "xyz/path/",
+            "copy-to-directory": "abc/path/",
+            "create-pull-request": "false"
         },
         "repo_two": {
-            "source_directory": "xyz/path/",
-            "target_directory": "abc/path/",
-            "create_pull_request": "false"
+            "copy-from-directory": "mno/path/",
+            "copy-to-directory": "pqr/path/",
+            "create-pull-request": "false"
         },
         "repo_three": {
-            "source_directory": "xyz/path/",
-            "target_directory": "abc/path/",
-            "create_pull_request": "true"
+            "copy-from-directory": "def/path/",
+            "copy-to-directory": "def/path/",
+            "create-pull-request": "true"
         }
     }
 }

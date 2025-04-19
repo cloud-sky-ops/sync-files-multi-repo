@@ -143,24 +143,24 @@ for repo,configs in repos_config.items():
     print(f"Initiating files sync to repo: {repo}")
     print("Fetch source directory")
     
-    if "source_directory" in configs:
-        COPY_FROM_DIRECTORY = configs["source_directory"]
+    if "copy-from-directory" in configs:
+        COPY_FROM_DIRECTORY = configs["copy-from-directory"]
     else:
         COPY_FROM_DIRECTORY = os.getenv("COPY_FROM_DIRECTORY", "").strip() or "."  # Default: root
     
     print(f"Source directory: {COPY_FROM_DIRECTORY}")
     print("Fetch target directory")
 
-    if "target_directory" in configs:
-        COPY_TO_DIRECTORY = configs["target_directory"]
+    if "copy-to-directory" in configs:
+        COPY_TO_DIRECTORY = configs["copy-to-directory"]
     else:
         COPY_TO_DIRECTORY = os.getenv("COPY_TO_DIRECTORY", "").strip() or "."  # Default: root
 
-    print(f"Source directory: {COPY_TO_DIRECTORY}")
+    print(f"Target directory: {COPY_TO_DIRECTORY}")
     print("Set CREATE_PR flag")
 
-    if "create_pull_request" in configs:
-        CREATE_PR = (configs["create_pull_request"]).lower() == "true" # comparision with == "true" after turning to lower case will return boolean value
+    if "create-pull-request" in configs:
+        CREATE_PR = (configs["create-pull-request"]).lower() == "true" # comparision with == "true" after turning to lower case will return boolean value
     else:
         CREATE_PR = os.getenv("CREATE_PR", "false").lower() == "true"
 
