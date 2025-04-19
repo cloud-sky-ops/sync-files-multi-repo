@@ -1,14 +1,11 @@
 from datetime import datetime, UTC
 import os
 import base64
-import requests
+import requests, json
 
 
 # GitHub Token and PR flags
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-CREATE_PR = os.getenv("CREATE_PR", "false").lower() == "true"
-COPY_FROM_DIRECTORY = os.getenv("COPY_FROM_DIRECTORY", "").strip() or "."  # Default: root
-COPY_TO_DIRECTORY = os.getenv("COPY_TO_DIRECTORY", "").strip() or "."  # Default: root
 BOT_NAME = "syncbot"
 BOT_EMAIL = "syncbot@github.com"
 
@@ -17,10 +14,6 @@ HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json"
 }
-
-# Read repository list
-with open("sync-repos.txt", "r") as f:
-    repos = [line.strip() for line in f.readlines() if line.strip()]
 
 def get_default_branch(target_repo):
     url = f"https://api.github.com/repos/{target_repo}"
@@ -141,10 +134,41 @@ def create_pull_request(target_repo, base_branch, head_branch):
         print(f"❌ Failed to create PR in {target_repo}: {response.json()}")
     print("--------------------------------------------------------------------------------------------------------------------")
 
-for repo in repos:
+# Read repo names and config from config file
+with open("sync_configs.json", "r") as config_file:
+    parsed_json = json.load(config_file)
+    repos_config=parsed_json["repos"]
+
+for repo,configs in repos_config.items():
     print(f"Initiating files sync to repo: {repo}")
+    print("Fetch source directory")
+    
+    if "source_directory" in configs:
+        COPY_FROM_DIRECTORY = configs["source_directory"]
+    else:
+        COPY_FROM_DIRECTORY = os.getenv("COPY_FROM_DIRECTORY", "").strip() or "."  # Default: root
+    
+    print(f"Source directory: {COPY_FROM_DIRECTORY}")
+    print("Fetch target directory")
+
+    if "target_directory" in configs:
+        COPY_TO_DIRECTORY = configs["target_directory"]
+    else:
+        COPY_TO_DIRECTORY = os.getenv("COPY_TO_DIRECTORY", "").strip() or "."  # Default: root
+
+    print(f"Source directory: {COPY_TO_DIRECTORY}")
+    print("Set CREATE_PR flag")
+
+    if "create_pull_request" in configs:
+        CREATE_PR = (configs["create_pull_request"]).lower() == "true" # comparision with == "true" after turning to lower case will return boolean value
+    else:
+        CREATE_PR = os.getenv("CREATE_PR", "false").lower() == "true"
+
+    print(f"CREATE_PR: {CREATE_PR}")
+
     print(f"Fetching default branch for {repo}")
     default_branch=get_default_branch(repo)
+
     if default_branch:   
         if CREATE_PR:
             feature_branch = create_feature_branch(repo, default_branch)
