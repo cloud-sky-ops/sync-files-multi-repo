@@ -134,7 +134,7 @@ def create_pull_request(target_repo, base_branch, head_branch):
         print(f"❌ Failed to create PR in {target_repo}: {response.json()}")
     print("--------------------------------------------------------------------------------------------------------------------")
 
-# Read repository list
+# Read repo names and config from config file
 with open("sync_configs.json", "r") as config_file:
     parsed_json = json.load(config_file)
     repos_config=parsed_json["repos"]
@@ -165,7 +165,7 @@ for repo,configs in repos_config.items():
         CREATE_PR = os.getenv("CREATE_PR", "false").lower() == "true"
 
     print(f"CREATE_PR: {CREATE_PR}")
-    
+
     print(f"Fetching default branch for {repo}")
     default_branch=get_default_branch(repo)
 
