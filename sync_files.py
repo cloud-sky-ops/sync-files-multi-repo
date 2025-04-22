@@ -28,9 +28,11 @@ def get_default_branch(target_repo):
 def get_files_in_directory(directory):
     """Returns a list of files (with paths) in the given directory."""
     file_paths = []
-    for root, _, files in os.walk(directory):
+    for root, dirnames, files in os.walk(directory):
         # print(f"root: {root}")
         # print(f"files: {files}")
+        if ".git" in dirnames:   # Exclude ".git/" directory files when copying from root
+            dirnames.remove(".git")
         for file in files:
             print(f"Adding file {file} to file path list")
             full_path = os.path.join(root, file)
