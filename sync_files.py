@@ -1,13 +1,14 @@
 from datetime import datetime, UTC
 import os
 import base64
+import time
 import requests, json
 
 
 # GitHub Token and PR flags
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-BOT_NAME = "syncbot"
-BOT_EMAIL = "syncbot@github.com"
+BOT_NAME = os.getenv("BOT_NAME", "").strip() or "syncbot"
+BOT_EMAIL = os.getenv("BOT_EMAIL", "").strip() or "syncbot@github.com"
 
 # GitHub API Headers
 HEADERS = {
@@ -119,6 +120,7 @@ def update_files_in_repo(target_repo, target_branch):
         else:
             print(f"❌ Failed to update {target_path} in {target_repo}: {response.json()}")
         print("--------------------------------------------------------------------------------------------------------------------")
+        time.sleep(6)
 
 def create_pull_request(target_repo, base_branch, head_branch):
     url = f"https://api.github.com/repos/{target_repo}/pulls"
