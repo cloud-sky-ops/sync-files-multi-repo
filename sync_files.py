@@ -1,6 +1,7 @@
 from datetime import datetime, UTC
 import os
 import base64
+import time
 import requests, json
 
 
@@ -119,6 +120,7 @@ def update_files_in_repo(target_repo, target_branch):
         else:
             print(f"❌ Failed to update {target_path} in {target_repo}: {response.json()}")
         print("--------------------------------------------------------------------------------------------------------------------")
+        time.sleep(6)
 
 def create_pull_request(target_repo, base_branch, head_branch):
     url = f"https://api.github.com/repos/{target_repo}/pulls"
