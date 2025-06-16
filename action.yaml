@@ -32,6 +32,11 @@ inputs:
     required: false
     default: ""
 
+  configs-json-file:
+    description: "Name of the JSON config file containing repository and respective configs"
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -59,3 +64,4 @@ runs:
         COPY_TO_DIRECTORY: ${{ inputs.copy-to-directory }}
         BOT_NAME: ${{ inputs.bot-name }}
         BOT_EMAIL: ${{ inputs.bot-email }}
+        CONFIG_FILE: ${{ inputs.configs-json-file }}

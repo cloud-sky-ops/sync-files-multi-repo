@@ -44,37 +44,41 @@ jobs:
 | `create-pull-request` | If `true`, creates a PR instead of committing directly. | `false` |
 | `copy-from-directory` | Source directory to sync from. | `root-directory` |
 | `copy-to-directory` | Target directory in the destination repos. | `root-directory` |
+| `bot-name` | Customizable name for the committer bot | `syncbot` |
+| `bot-email` | Customizable email for the committer bot | `syncbot@github.com` |
+| `configs-json-file` | Name override option for mandatory config JSON | `sync_configs.json` |
 
 ---
 
-## **Required File: `sync-repos.txt`**
-Creating the `sync-repos.txt` file is **mandatory**. This file contains a list of repositories where the files should be synced. Each repository should be listed on a new line in the format:
+## Scaling with **Required File: `sync_configs.json`**
 
-```
-owner/repo-name-1
-owner/repo-name-2
-owner/repo-name-3
+For large-scale repo management, you can use a **centralized JSON config** to define **repo-specific rules**. If the fields are present for a particular repo, it will override default behavior as passed during action call in workflow. **Please note** `bot-name, bot-email and config-json-file` are not valid fields for this file.
+
+### **Example `sync_configs.json` File**
+```json
+{
+    "repos": {
+        "my-org/repo-one": {
+            "create-pull-request": "true",
+            "copy-from-directory": "source-configs",
+            "copy-to-directory": "configs"
+        },
+        "my-org/repo-two": {
+            "create-pull-request": "false",
+            "copy-from-directory": "docker"
+        },
+        "my-org/repo-three": {}
+    }
+}
 ```
 
-### **Example `sync-repos.txt`**
-```
-my-org/repo-one
-my-org/repo-two
-my-org/repo-three
-```
+### **What Can Be Customized per Repo?**
+✅ **Pull Request Mode** → Enable/disable PR creation.  
+✅ **Source and Target Directory** → Specify where files should be placed in the destination repo.  
 
 ---
 
-## How It Works
-1. **Reads the list of repositories** from `sync-repos.txt`.
-2. **Detects the default branch** of each target repository.
-3. **Copies all files from the specified source directory. If source directory isn't specified it picks all files from root directory of the source repo**.
-4. **Uploads the files to the destination repositories. If target directory isn't specified it copies all files to root directory of the target repo**.
-5. **Creates a pull request** (if enabled) or directly commits the files to the default branch in that repo.
-
----
-
-## Example Use Cases
+## Use Cases
 
 ### **1️⃣ Sync Documentation Across Multiple Repos**
 Keep README files, templates, and markdown documents updated across multiple repositories.
@@ -83,21 +87,21 @@ copy-from-directory: "docs"
 copy-to-directory: "docs"
 ```
 
-### **2️⃣ Manage CI/CD Configurations for Multiple Services from one place**
-- Ensure all services follow **a standardized deployment process** by creating dynamic CI/CD files which are re-useable across multiple repositories but managed in one central location.
+### **2️⃣ Manage CI/CD Configurations for Hundreds of Services**
+- Sync GitHub Actions, Jenkinsfiles, and Kubernetes manifests across services.
+- Ensure all services follow **a standardized deployment process**.
+
 ```yaml
 copy-from-directory: ".github/workflows"
 copy-to-directory: ".github/workflows"
 ```
-  **Note**: To make changes to ".github/workflows", user needs to also add "**workflow**" permission to the PAT token.
-  ![image](https://github.com/user-attachments/assets/8f6c9a1f-1269-4c47-987a-54c23e675f7e)
 
-### **3️⃣ Update Dockerfiles Across Microservices**
-Keep all microservices updated with the latest **Docker base images**.
+### **3️⃣ Sync Security Policies and Compliance Configurations**
 ```yaml
-copy-from-directory: "docker"
-copy-to-directory: "docker"
+copy-from-directory: "security"
+copy-to-directory: "security"
 ```
+
 ---
 
 ## License

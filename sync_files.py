@@ -9,6 +9,7 @@ import requests, json
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 BOT_NAME = os.getenv("BOT_NAME", "").strip() or "syncbot"
 BOT_EMAIL = os.getenv("BOT_EMAIL", "").strip() or "syncbot@github.com"
+CONFIG_FILE = os.getenv("CONFIG_FILE", "").strip() or "sync_configs.json"
 
 # GitHub API Headers
 HEADERS = {
@@ -139,7 +140,7 @@ def create_pull_request(target_repo, base_branch, head_branch):
     print("--------------------------------------------------------------------------------------------------------------------")
 
 # Read repo names and config from config file
-with open("sync_configs.json", "r") as config_file:
+with open(CONFIG_FILE, "r") as config_file:
     parsed_json = json.load(config_file)
     repos_config=parsed_json["repos"]
 
