@@ -22,6 +22,16 @@ inputs:
     required: false
     default: ""
 
+  bot-name:
+    description: "Name of the bot which will be used a committer"
+    required: false
+    default: ""
+
+  bot-email:
+    description: "Email of the bot which will be used a committer"
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -47,3 +57,5 @@ runs:
         CREATE_PR: ${{ inputs.create-pull-request }}
         COPY_FROM_DIRECTORY: ${{ inputs.copy-from-directory }}
         COPY_TO_DIRECTORY: ${{ inputs.copy-to-directory }}
+        BOT_NAME: ${{ inputs.bot-name }}
+        BOT_EMAIL: ${{ inputs.bot-email }}
