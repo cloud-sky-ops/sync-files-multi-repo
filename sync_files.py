@@ -7,8 +7,8 @@ import requests, json
 
 # GitHub Token and PR flags
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-BOT_NAME = "syncbot"
-BOT_EMAIL = "syncbot@github.com"
+BOT_NAME = os.getenv("BOT_NAME", "").strip() or "syncbot"
+BOT_EMAIL = os.getenv("BOT_EMAIL", "").strip() or "syncbot@github.com"
 
 # GitHub API Headers
 HEADERS = {
