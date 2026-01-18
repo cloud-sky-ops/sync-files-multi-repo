@@ -14,7 +14,8 @@
         "repo_three": {
             "copy-from-directory": "def/path/",
             "copy-to-directory": "def/path/",
-            "create-pull-request": "true"
+            "create-pull-request": "true",
+            "pull-request-title": "custom-title-for-the-PR"
         }
     }
 }

@@ -42,6 +42,7 @@ jobs:
 |----------------------|--------------|---------|
 | `github_token` | **Required.** GitHub PAT token with repo access. | N/A |
 | `create-pull-request` | If `true`, creates a PR instead of committing directly. | `false` |
+| `pull-request-title` | Custom Title for PR | `Sync files [Automated]` |
 | `copy-from-directory` | Source directory to sync from. | `root-directory` |
 | `copy-to-directory` | Target directory in the destination repos. | `root-directory` |
 | `bot-name` | Customizable name for the committer bot | `syncbot` |
@@ -60,6 +61,7 @@ For large-scale repo management, you can use a **centralized JSON config** to de
     "repos": {
         "my-org/repo-one": {
             "create-pull-request": "true",
+             "pull-request-title": "[Jira-Ticket]-title-for-the-automated-PR",
             "copy-from-directory": "source-configs",
             "copy-to-directory": "configs"
         },

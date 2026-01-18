@@ -126,7 +126,7 @@ def update_files_in_repo(target_repo, target_branch):
 def create_pull_request(target_repo, base_branch, head_branch):
     url = f"https://api.github.com/repos/{target_repo}/pulls"
     payload = {
-        "title": "Sync files [Automated]",
+        "title": PULL_REQUEST_TITLE,
         "head": head_branch,
         "base": base_branch,
         "body": "This PR updates multiple files in the repository."
@@ -176,6 +176,12 @@ for repo,configs in repos_config.items():
 
     if default_branch:   
         if CREATE_PR:
+            if "pull-request-title" in configs:
+                PULL_REQUEST_TITLE = configs["pull-request-title"]
+            else:
+                PULL_REQUEST_TITLE = os.getenv("PULL_REQUEST_TITLE", "Sync files [Automated]").strip()
+
+            print(f"CREATE_PR: {CREATE_PR}")
             feature_branch = create_feature_branch(repo, default_branch)
             if feature_branch:
                 update_files_in_repo(repo, feature_branch)

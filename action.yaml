@@ -11,6 +11,11 @@ inputs:
     description: "Set to true to create a PR instead of direct commit"
     required: false
     default: "false"
+  
+  pull-request-title:
+    description: "Title for the PR ceated (default: Sync files [Automated])"
+    required: false
+    default: "Sync files [Automated]"
 
   copy-from-directory:
     description: "Directory to copy files from (default: root level of source repo)"
@@ -65,3 +70,4 @@ runs:
         BOT_NAME: ${{ inputs.bot-name }}
         BOT_EMAIL: ${{ inputs.bot-email }}
         CONFIG_FILE: ${{ inputs.configs-json-file }}
+        PULL_REQUEST_TITLE: ${{ inputs.pull-request-title }}
