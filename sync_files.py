@@ -10,6 +10,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 BOT_NAME = os.getenv("BOT_NAME", "").strip() or "syncbot"
 BOT_EMAIL = os.getenv("BOT_EMAIL", "").strip() or "syncbot@github.com"
 CONFIG_FILE = os.getenv("CONFIG_FILE", "").strip() or "sync_configs.json"
+PULL_REQUEST_TITLE = os.getenv("PULL_REQUEST_TITLE", "Sync files [Automated]").strip() # Basic initialization for pylint quirks
 
 # GitHub API Headers
 HEADERS = {
